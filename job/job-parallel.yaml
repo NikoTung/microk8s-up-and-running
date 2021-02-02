@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel
+  namespace: default
+  labels:
+    chapter: jobs
+spec:
+  parallelism: 5
+  completions: 10
+  template:
+    metadata:
+      labels:
+        chapter: jobs
+    spec:
+      containers:
+      - name: kuard
+        # image: gcr.io/kuar-demo/kuard-amd64:blue
+        # according to the errata, only the tag:1 work when to generate keys.https://www.oreilly.com/catalog/errataunconfirmed.csp?isbn=0636920043874  
+        image: gcr.io/kuar-demo/kuard-amd64:1
+        imagePullPolicy: Always
+        args:
+        - "--keygen-enable=true"
+        - "--keygen-exit-on-complete=true"
+        - "--keygen-num-to-gen=10"
+      restartPolicy: OnFailure

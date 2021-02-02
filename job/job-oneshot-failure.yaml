@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: oneshot
+  namespace: default
+  labels:
+    app: oneshot
+spec:
+  template:
+    spec:
+      containers:
+      - name: kuard
+        # image: gcr.io/kuar-demo/kuard-amd64:blue
+        # according to the errata, only the tag:1 work when to generate keys.https://www.oreilly.com/catalog/errataunconfirmed.csp?isbn=0636920043874  
+        image: gcr.io/kuar-demo/kuard-amd64:blue
+        imagePullPolicy: Always
+        args:
+        - "--keygen-enable=true"
+        - "--keygen-exit-on-complete=true"
+        - "--keygen-exit-code=1"
+        - "--keygen-num-to-gen=10"
+      restartPolicy: OnFailure
